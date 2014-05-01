@@ -1,10 +1,7 @@
 package org.wso2.emm.rpie.org.wso2.emm.rpie.connector;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -12,21 +9,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class HttpService extends ConnectionService {
-    public void sendPayload(JSONObject data, String address) throws IOException {
-        CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault();
-        try {
-            httpclient.start();
-            HttpPost request = new HttpPost(address);
-            request.setEntity(new StringEntity(data.toJSONString()));
-            Future<HttpResponse> future = httpclient.execute(request, null);
-            HttpResponse response = future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } finally {
-            httpclient.close();
-        }
+    public void sendPayload(JSONObject data, String address) throws IOException, ExecutionException, InterruptedException {
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        System.out.println(data.toJSONString());
+        Future<Response> f = asyncHttpClient.preparePost(address).setBody(data.toJSONString()).setHeader("content-type", "application/json").execute();
+        Response r = f.get();
         System.out.println("Done");
     }
 }

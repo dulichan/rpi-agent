@@ -35,6 +35,10 @@ public class Runner {
         HttpService httpService = new HttpService();
         JSONObject sampleObject = new JSONObject();
         sampleObject.put("Person", "Going");
-        httpService.sendPayload(sampleObject, "http://192.168.1.3:");
+        try {
+            httpService.sendPayload(sampleObject, "http://192.168.1.3:3000/iot");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
